@@ -1,0 +1,44 @@
+version: "3"
+
+volumes:
+  postgres_song_volume:
+
+services:
+  pg_song:
+    image: postgres:14-alpine3.19
+    env_file:
+      - local.env
+    environment:
+      - "POSTGRES_DB=${PG_DATABASE_NAME}"
+      - "POSTGRES_USER=${PG_USER}"
+      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - postgres_song_volume:/var/lib/postgresql/data
+    networks:
+      - pg_network
+  migrator:
+    build:
+      context: .
+      dockerfile: migrator.Dockerfile
+    restart: on-failure
+    env_file:
+      - local.env
+    environment:
+      DB_HOST: pg_chat
+      PG_DATABASE_NAME: ${PG_DATABASE_NAME}
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_PORT: 5432
+      MIGRATION_DIR: ${MIGRATION_DIR}
+      PG_DSN: ${PG_DSN}
+    volumes:
+      - ./migrations:/root/migrations
+      - ./local.env:/root/local.env
+    networks:
+      - pg_network
+
+
+networks:
+  pg_network:

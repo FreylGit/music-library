@@ -1,0 +1,221 @@
+definitions:
+  songs.customTime:
+    properties:
+      time.Time:
+        type: string
+    type: object
+  songs.request_add:
+    description: Структура данных для добавления песни
+    properties:
+      group:
+        description: Группа, обязательное поле
+        type: string
+      song:
+        description: Песня, обязательное поле
+        type: string
+    type: object
+  songs.request_update:
+    properties:
+      group:
+        type: string
+      link:
+        type: string
+      release_date:
+        $ref: '#/definitions/songs.customTime'
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+  songs.response_get:
+    properties:
+      group:
+        type: string
+      id:
+        type: integer
+      link:
+        type: string
+      release_date:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+  songs.response_songs:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/songs.response_get'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /songs:
+    get:
+      consumes:
+      - application/json
+      description: Позволяет получить список песен с учетом фильтров и пагинации
+      parameters:
+      - description: Номер страницы для пагинации (начиная с 1)
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Название группы для фильтрации
+        in: query
+        name: group
+        type: string
+      - description: Название песни для фильтрации
+        in: query
+        name: song
+        type: string
+      - description: Дата релиза песни в формате DD.MM.YYYY
+        in: query
+        name: releaseDate
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список песен
+          schema:
+            $ref: '#/definitions/songs.response_songs'
+        "400":
+          description: 'error: Invalid param id'
+          schema:
+            type: string
+        "500":
+          description: 'error: Internal server'
+          schema:
+            type: string
+      summary: Получает список песен с фильтрацией
+      tags:
+      - Songs
+    post:
+      consumes:
+      - application/json
+      description: Позволяет добавить песню в библиотеку, принимая название группы
+        и песни
+      parameters:
+      - description: Данные для добавления песни
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/songs.request_add'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: Successfully'
+          schema:
+            type: string
+        "400":
+          description: 'error: Invalid body'
+          schema:
+            type: string
+        "500":
+          description: 'error: Internal server'
+          schema:
+            type: string
+      summary: Добавление новой песни
+      tags:
+      - Songs
+  /songs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Позволяет удалить песню из библиотеки по её ID
+      parameters:
+      - description: ID песни, которую нужно удалить
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: Successfully'
+          schema:
+            type: string
+        "400":
+          description: 'error: Invalid param id'
+          schema:
+            type: string
+        "500":
+          description: 'error: Internal server'
+          schema:
+            type: string
+      summary: Удаление песни по ID
+      tags:
+      - Songs
+    get:
+      consumes:
+      - application/json
+      description: Позволяет получить песню по id
+      parameters:
+      - description: Id песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Номер куплета для пагинации
+        in: query
+        name: kuplet
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Детали песни
+          schema:
+            $ref: '#/definitions/songs.response_get'
+        "400":
+          description: 'error: Invalid param id'
+          schema:
+            type: string
+        "500":
+          description: 'error: Internal server'
+          schema:
+            type: string
+      summary: Получает песню
+      tags:
+      - Songs
+    put:
+      consumes:
+      - application/json
+      description: Позволяет обновить информацию о песне по ID. Все поля необязательные,
+        обновляются только переданные значения.
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Информация для обновления песни
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/songs.request_update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: Successfully'
+          schema:
+            type: string
+        "400":
+          description: 'error: Invalid body'
+          schema:
+            type: string
+        "500":
+          description: 'error: Internal server'
+          schema:
+            type: string
+      summary: Обновляет информацию о песне
+      tags:
+      - Songs
+swagger: "2.0"
