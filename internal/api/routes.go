@@ -9,8 +9,6 @@ import (
 )
 
 func RegisterRoutes(router *gin.Engine, songHandler *songs.SongHandler) {
-	// Middleware
-	//router.Use(middlewares.LoggingMiddleware())
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
