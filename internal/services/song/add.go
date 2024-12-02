@@ -11,8 +11,8 @@ import (
 )
 
 func (s *serv) Add(ctx context.Context, song modelsServ.Song) error {
-	// TODO: не забыть убрать дебажный запрос
-	info, err := debug_request_info(song.GroupName, song.SongName)
+	// TODO: если я не так понял задание, можно проверить, заменив на debug_request_info
+	info, err := request_info(song.GroupName, song.SongName)
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,9 @@ func (s *serv) Add(ctx context.Context, song modelsServ.Song) error {
 }
 
 func request_info(group string, song string) (response_add, error) {
-	resp, err := http.Get(fmt.Sprintf("/info?group=%s&song=%s", group, song))
+	// Тут поненять на нужный хост
+	const host = "http://localhost:8080"
+	resp, err := http.Get(fmt.Sprintf("%s/info?group=%s&song=%s", host, group, song))
 	if err != nil {
 		return response_add{}, fmt.Errorf("External service error")
 	}

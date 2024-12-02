@@ -35,7 +35,7 @@ func (s *SongHandler) UpdateSong(c *gin.Context) {
 		return
 	}
 
-	model := requestUpdateToServ(request, id)
+	model := convertRequestUpdateToServ(request, id)
 	ctx := c.Request.Context()
 	err = s.songServ.Update(ctx, model)
 	if err != nil {

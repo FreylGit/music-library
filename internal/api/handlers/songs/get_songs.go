@@ -43,7 +43,7 @@ func (s *SongHandler) GetSongs(c *gin.Context) {
 		Items: make([]response_get, len(songs)),
 	}
 	for i := 0; i < len(responseDate.Items); i++ {
-		responseDate.Items[i] = responseGetSong(songs[i])
+		responseDate.Items[i] = convertResponseGetSong(songs[i])
 	}
 	c.JSON(http.StatusOK, responseDate)
 }

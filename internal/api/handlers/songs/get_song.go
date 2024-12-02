@@ -43,7 +43,7 @@ func (s *SongHandler) GetSong(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, "Internal server")
 		return
 	}
-	response := responseGetSong(song)
+	response := convertResponseGetSong(song)
 
 	c.JSON(http.StatusOK, response)
 
