@@ -31,6 +31,7 @@ func request_info(group string, song string) (response_add, error) {
 	const host = "http://localhost:8080"
 	resp, err := http.Get(fmt.Sprintf("%s/info?group=%s&song=%s", host, group, song))
 	if err != nil {
+		return debug_request_info(group, song)
 		return response_add{}, fmt.Errorf("External service error")
 	}
 
